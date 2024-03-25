@@ -230,13 +230,38 @@ class CashCardApplicationTests {
 	}
 
 //	Тестирования метода удаления карточки
-//	@Test
-//	@DirtiesContext
-//	void shouldDeleteAnExistingCashCard() {
-//		ResponseEntity<Void> response = restTemplate
-//				.withBasicAuth("hiss", "abc123")
-//				.exchange("/cashcards/99", HttpMethod.DELETE, null, Void.class);
-//		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-//	}
+	@Test
+	@DirtiesContext
+	void shouldDeleteAnExistingCashCard() {
+		ResponseEntity<Void> response = restTemplate
+				.withBasicAuth("hiss", "abc123")
+				.exchange("/cashcards/99", HttpMethod.DELETE, null, Void.class);
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+		//	Проверяем удалена ли карта
+		ResponseEntity<String> getResponse = restTemplate
+				.withBasicAuth("hiss", "abc123")
+				.getForEntity("/cashcards/99", String.class);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+//	Тест для проверки удаления несуществующей карты
+	@Test
+	void shouldNotDeleteACashCardThatDoesNotExists() {
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.withBasicAuth("hiss", "abc123")
+				.exchange("/cashcards/999999", HttpMethod.DELETE, null, Void.class);
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
+//	Тест на првоерку может ли пользователь удалить не свою карту
+	@Test
+	void shouldNotAllowDeletionOfCashCardsTheyDoNotOwn() {
+		ResponseEntity<Void> deleteResponse = restTemplate
+				.withBasicAuth("hiss", "abc123")
+				.exchange("/cashcards/102", HttpMethod.DELETE, null, Void.class);
+		assertThat(deleteResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+	}
+
 
 }

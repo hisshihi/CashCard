@@ -43,5 +43,10 @@ public class CashCardServiceImpl implements CashCardService {
         return cashCardRepository.findByOwner(name, amount);
     }
 
+    @Override
+    public void deleteCashCardById(Long requestId) {
+        cashCardRepository.deleteById(requestId);
+    }
+
 
 }

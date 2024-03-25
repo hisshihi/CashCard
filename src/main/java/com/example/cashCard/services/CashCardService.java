@@ -17,4 +17,6 @@ public interface CashCardService {
     CashCardEntity findByIdAndOwner(Long requestId, String name);
 
     Page<CashCardEntity> findByOwner(String name, PageRequest amount);
+
+    void deleteCashCardById(Long requestId);
 }
